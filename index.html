@@ -289,20 +289,10 @@
         }
 
         function nextStep(current) {
-            let canProceed = true;
-            if (current === 2) {
-                canProceed = !!document.querySelector('input[name="problems"]:checked');
-                showError('problems-error', !canProceed);
-            }
-            if (current === 4) {
-                canProceed = !!document.querySelector('input[name="risk"]:checked');
-                showError('risk-error', !canProceed);
-            }
-            if (!canProceed) return;
-            
-            document.getElementById(`step${current}`).classList.remove('active');
-            document.getElementById(`step${current + 1}`).classList.add('active');
-        }
+    console.log('Attempting to switch to step ' + (current + 1)); // Debug
+    document.getElementById(`step${current}`).classList.remove('active');
+    document.getElementById(`step${current + 1}`).classList.add('active');
+}
 
         function prevStep(current) {
             document.getElementById(`step${current}`).classList.remove('active');
