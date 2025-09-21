@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outpatient E/M Coding Helper for Cardiology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto p-6 max-w-3xl">
+        <h1 class="text-3xl font-bold text-center mb-6">Outpatient E/M Coding Helper for Cardiology Visits</h1>
+        <p class="text-center mb-4">This tool guides you through assessing MDM for new (99202-99205) or established (99212-99215) outpatient cardiology visits. Click through the steps.</p>
+
+        <!-- Step 1: Visit Type -->
+        <div id="step1" class="step bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-2xl font-semibold mb-4">Step 1: Visit Type</h2>
+            <p class="mb-4">Select the type of visit:</p>
+            <select id="visitType" class="w-full p-2 border rounded-md mb-4">
+                <option value="new">New Patient (99202-99205)</option>
+                <option value="established">Established Patient (99212-99215)</option>
+            </select>
+            <button onclick="nextStep(1)" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Next</button>
+        </div>
+
+        <!-- Step 2: Problems Addressed -->
+        <div id="step2" class="step hidden bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-2xl font-semibold mb-4">Step 2: Number and Complexity of Problems Addressed</h2>
+            <p class="mb-4">Select the option that best matches your encounter. Examples are provided for each level.</p>
+            <div class="space-y-4">
+                <div class="flex items-center">
+                    <input type="radio" name="problems" value="low" class="mr-2">
+                    <label class="font-medium">Low Level</label>
+                </div>
+                <ul class="list-disc pl-8 text-sm">
+                    <li>1 self-limited or minor problem (e.g., palpitations resolved with reassurance)</li>
+                    <li>Or 2+ self-limited/minor problems</li>
+                    <li>Or 1 stable chronic illness (e.g., controlled hypertension)</li>
+                    <li>Or 1 acute, uncomplicated illness/injury (e.g., mild chest discomfort, likely musculoskeletal)</li>
+                </ul>
+                <div class="flex items-center">
+                    <input type="radio" name="problems" value="moderate" class="mr-2">
+                    <label class="font-medium">Moderate Level</label>
+                </div>
+                <ul class="list-disc pl-8 text-sm">
+                    <li>1+ chronic illnesses with exacerbation/progression/side effects (e.g., worsening angina requiring medication adjustment)</li>
+                    <li>Or 2+ stable chronic illnesses (e.g., hypertension and stable CAD)</li>
+                    <li>Or 1 undiagnosed new problem with uncertain prognosis (e.g., new exertional dyspnea)</li>
+                    <li>Or 1 acute illness with systemic symptoms (e.g., suspected pericarditis)</li>
+                    <li>Or 1 acute complicated injury (e.g., chest trauma in patient on anticoagulants)</li>
+                </ul>
+                <div class="flex items-center">
+                    <input type="radio" name="problems" value="high" class="mr-2">
+                    <label class="font-medium">High Level</label>
+                </div>
+                <ul class="list-disc pl-8 text-sm">
+                    <li>1+ chronic illnesses with severe exacerbation/progression/side effects (e.g., heart failure with worsening dyspnea requiring urgent intervention)</li>
+                    <li>Or 1 acute/chronic illness/injury threatening life or function (e.g., suspected acute coronary syndrome)</li>
+                </ul>
+            </div>
+            <p class="mt-4 text-red-500" id="problemsError" style="display: none;">Please select an option to proceed.</p>
+            <button onclick="prevStep(2)" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2">Back</button>
+            <button onclick="nextStep(2)" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Next</button>
+        </div>
+
+        <!-- Step 3: Data Reviewed -->
+        <div id="step3" class="step hidden bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-2xl font-semibold mb-4">Step 3: Amount and/or Complexity of Data Reviewed and Analyzed</h2>
+            <p class="mb-4">Check all that apply. The level will be determined based on categories met.</p>
+            <div class="space-y-4">
+                <div>
+                    <label class="block font-medium">Category 1: Tests, Notes, and Historian</label>
+                    <ul class="list-disc pl-5 text-sm">
+                        <li><input type="checkbox" name="dataCat1" value="externalNotes"> Review of external notes from unique source</li>
+                        <li><input type="checkbox" name="dataCat1" value="testResults"> Review of unique test results (e.g., reviewing prior echocardiogram)</li>
+                        <li><input type="checkbox" name="dataCat1" value="orderTests"> Ordering of unique tests (e.g., order a stress test, order a coronary CTA with contrast)</li>
+                        <li><input type="checkbox" name="dataCat1" value="historian"> Assessment requiring independent historian (e.g., family input for confused patient)</li>
+                    </ul>
+                </div>
+                <div>
+                    <label class="block font-medium">Category 2: Independent Interpretation</label>
+                    <ul class="list-disc pl-5 text-sm">
+                        <li><input type="checkbox" name="dataCat2" value="interpretation"> Independent interpretation of tests not separately reported (e.g., personally reviewing an ECG or stress test)</li>
+                    </ul>
+                </div>
+                <div>
+                    <label class="block font-medium">Category 3: Discussion</label>
+                    <ul class="list-disc pl-5 text-sm">
+                        <li><input type="checkbox" name="dataCat3" value="discussion"> Discussion with external provider/source (e.g., consulting cardiothoracic surgeon)</li>
+                    </ul>
+                </div>
+                <div>
+                    <label class="block font-medium">Levels:</label>
+                    <ul class="list-disc pl-5 text-sm">
+                        <li>Low: Minimal or limited (e.g., any 2 from Category 1 or independent historian)</li>
+                        <li>Moderate: Moderate (e.g., any 3 from Category 1, or Category 2, or Category 3)</li>
+                        <li>High: Extensive (meet 2 of 3 categories)</li>
+                    </ul>
+                </div>
+            </div>
+            <button onclick="prevStep(3)" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2">Back</button>
+            <button onclick="nextStep(3)" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Next</button>
+        </div>
+
+        <!-- Step 4: Risk -->
+        <div id="step4" class="step hidden bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-2xl font-semibold mb-4">Step 4: Risk of Complications and/or Morbidity or Mortality</h2>
+            <p class="mb-4">Select the option that best matches. Examples included.</p>
+            <div class="space-y-4">
+                <div class="flex items-center">
+                    <input type="radio" name="risk" value="low" class="mr-2">
+                    <label class="font-medium">Low Level</label>
+                </div>
+                <ul class="list-disc pl-8 text-sm">
+                    <li>Minimal (e.g., lifestyle modification, over-the-counter meds)</li>
+                    <li>Or low (e.g., prescribing low-dose aspirin)</li>
+                </ul>
+                <div class="flex items-center">
+                    <input type="radio" name="risk" value="moderate" class="mr-2">
+                    <label class="font-medium">Moderate Level</label>
+                </div>
+                <ul class="list-disc pl-8 text-sm">
+                    <li>Prescription drug management (e.g., initiating or adjusting statins or beta-blockers)</li>
+                    <li>Decision for minor procedure with risk factors (e.g., cardioversion in anticoagulated patient)</li>
+                    <li>Treatment limited by social determinants (e.g., non-compliance due to financial barriers)</li>
+                </ul>
+                <div class="flex items-center">
+                    <input type="radio" name="risk" value="high" class="mr-2">
+                    <label class="font-medium">High Level</label>
+                </div>
+                <ul class="list-disc pl-8 text-sm">
+                    <li>Drug therapy needing intensive monitoring (e.g., initiating amiodarone with close follow-up)</li>
+                    <li>Decision for major procedure with risk factors (e.g., planning cardiac catheterization in high-risk patient)</li>
+                    <li>Decision to refer for urgent hospitalization (e.g., suspected unstable angina requiring inpatient evaluation)</li>
+                </ul>
+            </div>
+            <p class="mt-4 text-red-500" id="riskError" style="display: none;">Please select an option to proceed.</p>
+            <button onclick="prevStep(4)" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2">Back</button>
+            <button onclick="nextStep(4)" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Next</button>
+        </div>
+
+        <!-- Step 5: Time Override -->
+        <div id="step5" class="step hidden bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-2xl font-semibold mb-4">Step 5: Time Override (Optional)</h2>
+            <p class="mb-4">If using time instead of (or in addition to) MDM, enter total minutes spent on the date of encounter (includes chart review, counseling, etc.).</p>
+            <label class="block mb-2">Total minutes (e.g., 30):</label>
+            <input type="number" id="timeInput" class="w-full p-2 border rounded-md mb-4" min="0">
+            <p class="text-red-500" id="timeError" style="display: none;">Please enter a valid non-negative number.</p>
+            <div class="mb-4">
+                <label class="block font-medium">Thresholds:</label>
+                <ul class="list-disc pl-5 text-sm">
+                    <li>New: Level 2 ≥20 min, Level 3 ≥30 min, Level 4 ≥40 min, Level 5 ≥60 min</li>
+                    <li>Established: Level 2 ≥10 min, Level 3 ≥20 min, Level 4 ≥30 min, Level 5 ≥40 min</li>
+                </ul>
+            </div>
+            <button onclick="prevStep(5)" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2">Back</button>
+            <button onclick="calculateLevel()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Calculate Level</button>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="step hidden bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-2xl font-semibold mb-4">Results</h2>
+            <p id="resultText" class="mb-4"></p>
+            <button onclick="reset()" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Reset and Start Over</button>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-6 text-sm text-gray-600">
+            <p>This is an educational tool only. Consult official guidelines and your billing team.</p>
+            <p>For full details: <a href="https://www.ama-assn.org/practice-management/cpt/cpt-evaluation-and-management" class="text-blue-500 hover:underline">AMA Guidelines</a> | <a href="https://www.ama-assn.org/system/files/2023-04/cpt-office-visit-mdm-grid.pdf" class="text-blue-500 hover:underline">MDM Grid</a></p>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let visitType = '';
+        let problemsLevel = '';
+        let dataLevel = '';
+        let riskLevel = '';
+        let timeMinutes = 0;
+
+        function nextStep(step) {
+            if (step === 2 && !document.querySelector('input[name="problems"]:checked')) {
+                document.getElementById('problemsError').style.display = 'block';
+                return;
+            }
+            if (step === 4 && !document.querySelector('input[name="risk"]:checked')) {
+                document.getElementById('riskError').style.display = 'block';
+                return;
+            }
+
+            document.getElementById(`step${step}`).classList.add('hidden');
+            currentStep++;
+            document.getElementById(`step${currentStep}`).classList.remove('hidden');
+
+            if (step === 1) {
+                visitType = document.getElementById('visitType').value;
+            } else if (step === 2) {
+                problemsLevel = document.querySelector('input[name="problems"]:checked').value;
+            } else if (step === 3) {
+                calculateDataLevel();
+            } else if (step === 4) {
+                riskLevel = document.querySelector('input[name="risk"]:checked').value;
+            }
+        }
+
+        function prevStep(step) {
+            document.getElementById(`step${step}`).classList.add('hidden');
+            currentStep--;
+            document.getElementById(`step${currentStep}`).classList.remove('hidden');
+        }
+
+        function calculateDataLevel() {
+            const cat1Count = document.querySelectorAll('input[name="dataCat1"]:checked').length;
+            const cat2Checked = document.querySelector('input[name="dataCat2"]:checked') !== null;
+            const cat3Checked = document.querySelector('input[name="dataCat3"]:checked') !== null;
+
+            let categoriesMet = 0;
+            if (cat1Count >= 3) categoriesMet++;
+            if (cat2Checked) categoriesMet++;
+            if (cat3Checked) categoriesMet++;
+
+            if (categoriesMet >= 2) {
+                dataLevel = 'high';
+            } else if (cat1Count >= 3 || cat2Checked || cat3Checked) {
+                dataLevel = 'moderate';
+            } else if (cat1Count >= 2 || cat1Count === 1) {
+                dataLevel = 'low';
+            } else {
+                dataLevel = 'minimal';
+            }
+        }
+
+        function calculateLevel() {
+            timeMinutes = parseInt(document.getElementById('timeInput').value) || 0;
+            if (timeMinutes < 0) {
+                document.getElementById('timeError').style.display = 'block';
+                return;
+            }
+
+            document.getElementById(`step${currentStep}`).classList.add('hidden');
+            currentStep++;
+            document.getElementById('results').classList.remove('hidden');
+
+            let mdmLevel = 'minimal';
+            const levels = ['minimal', 'low', 'moderate', 'high'];
+            const levelIndex = Math.min(
+                levels.indexOf(problemsLevel),
+                levels.indexOf(dataLevel),
+                levels.indexOf(riskLevel)
+            );
+            if (levelIndex > 0) mdmLevel = levels[levelIndex];
+
+            let finalLevel = '';
+            if (visitType === 'new') {
+                if (timeMinutes >= 60 || mdmLevel === 'high') finalLevel = '99205 (Level 5)';
+                else if (timeMinutes >= 40 || mdmLevel === 'moderate') finalLevel = '99204 (Level 4)';
+                else if (timeMinutes >= 30 || mdmLevel === 'low') finalLevel = '99203 (Level 3)';
+                else if (timeMinutes >= 20) finalLevel = '99202 (Level 2)';
+                else finalLevel = '99202 (Level 2)';
+            } else {
+                if (timeMinutes >= 40 || mdmLevel === 'high') finalLevel = '99215 (Level 5)';
+                else if (timeMinutes >= 30 || mdmLevel === 'moderate') finalLevel = '99214 (Level 4)';
+                else if (timeMinutes >= 20 || mdmLevel === 'low') finalLevel = '99213 (Level 3)';
+                else if (timeMinutes >= 10) finalLevel = '99212 (Level 2)';
+                else finalLevel = '99212 (Level 2)';
+            }
+
+            document.getElementById('resultText').innerHTML = `
+                <strong>Visit Type:</strong> ${visitType === 'new' ? 'New Patient' : 'Established Patient'}<br>
+                <strong>Problems Level:</strong> ${problemsLevel.charAt(0).toUpperCase() + problemsLevel.slice(1)}<br>
+                <strong>Data Level:</strong> ${dataLevel.charAt(0).toUpperCase() + dataLevel.slice(1)}<br>
+                <strong>Risk Level:</strong> ${riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)}<br>
+                <strong>Time (if used):</strong> ${timeMinutes > 0 ? timeMinutes + ' minutes' : 'Not used'}<br>
+                <strong>Final E/M Code:</strong> ${finalLevel}
+            `;
+        }
+
+        function reset() {
+            currentStep = 1;
+            visitType = '';
+            problemsLevel = '';
+            dataLevel = '';
+            riskLevel = '';
+            timeMinutes = 0;
+            document.getElementById('visitType').value = 'new';
+            document.querySelectorAll('input[name="problems"]').forEach(input => input.checked = false);
+            document.querySelectorAll('input[name="dataCat1"]').forEach(input => input.checked = false);
+            document.querySelectorAll('input[name="dataCat2"]').forEach(input => input.checked = false);
+            document.querySelectorAll('input[name="dataCat3"]').forEach(input => input.checked = false);
+            document.querySelectorAll('input[name="risk"]').forEach(input => input.checked = false);
+            document.getElementById('timeInput').value = '';
+            document.getElementById('problemsError').style.display = 'none';
+            document.getElementById('riskError').style.display = 'none';
+            document.getElementById('timeError').style.display = 'none';
+            document.querySelectorAll('.step').forEach(step => step.classList.add('hidden'));
+            document.getElementById('step1').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
